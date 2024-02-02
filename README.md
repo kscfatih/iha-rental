@@ -26,8 +26,7 @@ JS : Jquery, Ajax
 
 
 ## Önemli işlevler;  
--Tüm listeleme ve filtreleme işlemleri api view ile yapılmıştır.  
--Screen ile zaman mekanizması kurulmuştur.  
+-Tüm listeleme ve filtreleme işlemleri api view ile yapılmıştır.    
 -Ön yüzde asenkron fonksiyonlar kullanılmıştır.  
 -Ön yüzde Bootstrap kullanılmıştır ayrıca javascript kısmında moment, date-field gibi ekstra kütüphaneler dahil edilmiştir.  
 -Proje Linux Ubuntu 20 bir sunucuda kambur.net domaini üzerinde nginx web server ile yapılandırılmıştır.  
