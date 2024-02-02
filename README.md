@@ -15,9 +15,9 @@ Username : iha_db
 Şifre : IHA123.  
 Veritabanı Adı: ihadb
 
-## Özellikler:
-- Yönetici panelinde; İHA,Kategori,Müşteri ve Kiralık İHA ekleme, listeleme, filtreleme, silme, düzenleme. Kira talebi onaylama veya silme.
-- Müşteri panelinde; Kira talebi oluşturma. Kiradaki İHA'ları görüntüleme.
+## Temel Özellikler:
+- Yönetici panelinde (management app) ; İHA,Kategori,Müşteri ve Kiralık İHA ekleme, listeleme, filtreleme, silme, düzenleme. Kira talebi onaylama veya silme.
+- Müşteri panelinde (panel app) ; Kira talebi oluşturma. Kiradaki İHA'ları görüntüleme.
 - Yeni müşteri hesabı oluşturma, hesap bilgileri güncelleme, müşteri şifre güncelleme
 
 ### Kullanılan yapılar:
