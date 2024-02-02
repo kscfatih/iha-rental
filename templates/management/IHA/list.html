@@ -1,0 +1,168 @@
+{%extends 'management/base/index.html'%}
+{% block title %} İHA Listesi {%endblock title%}
+{%block breadcrumb%} İHA Listesi {%endblock breadcrumb%}
+{%block page-title%} İHA Listesi {%endblock page-title%}
+
+{%block content%}
+
+<div class="row">
+ <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-3">
+                <input type="text" id="iha_ara" class="form-control" placeholder="Marka/Model ara ...">
+              </div>
+              <div class="col-3">
+                <select id="menzil" class="form-control">
+                  <option value="">Menzil Filtrele (KM)</option>
+                  <option value="50-100">50-100</option>
+                  <option value="100-200">100-200</option>
+                  <option value="200-300">200-300</option>
+                  <option value="300-500">300-500</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <select id="yuk_kapasitesi" class="form-control">
+                  <option value="">Yük Kapasitesi Filtrele (KG)</option>
+                  <option value="50-100">50-100</option>
+                  <option value="100-200">100-200</option>
+                  <option value="200-300">200-300</option>
+                  <option value="300-400">300-400</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <select id="kategori" class="form-control">
+                  <option value="" selected  > Kategori Filtrele</option>
+                  {%for i in kategoriler%}
+                  <option value="{{i.id}}">  {{i.isim}}</option>
+                  {%endfor%}   
+                </select>
+              </div>
+            
+            
+            </div>
+            
+          </div>
+        
+       
+          <div class="card-body">
+            <div id="total-items" ></div>
+            <table id="ihaTable" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
+              <thead>
+                <tr>
+                  <th>Marka</th>
+                  <th>Model</th>
+                  <th>Kategori</th>
+                  <th>Yük Kapasitesi</th>
+                  <th>Menzil</th>
+                  <th>Durumu</th>
+                  <th>Düzenle</th>
+                  <th>Sil</th>
+                </tr>
+              </thead>
+              <tbody>
+               
+                
+              </tbody>
+            </table>
+            <div id="pagination"></div>
+            
+          </div>
+        </div>
+      </div>
+</div>
+
+{%endblock content%}
+
+
+{%block js%}
+<script>
+ document.addEventListener("DOMContentLoaded", function() {
+    var apiUrl = '/management/api/iha/';
+    $('#iha_ara').on('input', function() {
+    fetchIHADataWithFilters(apiUrl);
+});
+    $('#menzil').on('change', function() {
+        fetchIHADataWithFilters(apiUrl);
+    });
+    $('#yuk_kapasitesi').on('change', function() {
+        fetchIHADataWithFilters(apiUrl);
+    });
+    $('#kategori').on('change', function() {
+        fetchIHADataWithFilters(apiUrl);
+    });
+
+
+    fetchIHAData(apiUrl);
+});
+
+function fetchIHAData(url) {
+    var tableBody = $('#ihaTable tbody');
+    tableBody.empty(); 
+    tableBody.append('<tr><td colspan="8" class="text-center">Loading...</td></tr>'); 
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(data) {
+            tableBody.empty(); 
+
+            if (data.results.length === 0) {
+               
+                tableBody.append('<tr><td colspan="8" class="text-center">Kayıtlı İHA bulunmamaktadır. <a href="create-iha">eklemek için tıklayın</a></td></tr>');
+            } else {
+                // Sonuçları tabloya ekle
+                $.each(data.results, function(key, iha) {
+                    tableBody.append(
+                        '<tr>' +
+                        '<td>' + iha.marka + '</td>' +
+                        '<td>' + iha.model + '</td>' +
+                        '<td>' + iha.kategori_isim + '</td>' +
+                        '<td>' + iha.yuk_kapasitesi + '</td>' +
+                        '<td>' + iha.menzil + '</td>' +
+                        '<td>' + (iha.status == 'true' ? 'Aktif' : 'Pasif') + '</td>' +
+                        `<td><a href="edit_iha/${iha.id}" class="btn btn-primary">Detay</a></td>` +
+                        `<td><a href="iha_sil/${iha.id}" class="btn btn-danger">Sil</a></td>` +
+                        '</tr>'
+                    );
+                });
+            }
+
+            $('#total-items').text('Toplam İHA Sayısı: ' + data.total_items);
+            updatePagination(data);
+        },
+        error: function() {
+            tableBody.empty();  
+            alert("Bir hata oluştu!");
+        }
+    });
+}
+
+function fetchIHADataWithFilters(url) {
+    var searchQuery = $('#iha_ara').val();
+    var menzil = $('#menzil').val();
+    var yukKapasitesi = $('#yuk_kapasitesi').val();
+    var kategori = $('#kategori').val();
+    var params = new URLSearchParams({
+        search: searchQuery, 
+        menzil: menzil, 
+        yuk_kapasitesi: yukKapasitesi, 
+        kategori: kategori
+    }).toString();
+    fetchIHAData(url + '?' + params);
+}
+function updatePagination(data) {
+    console.log(data);
+    var pagination = $('#pagination');
+    pagination.empty();
+    
+    if (data.links.previous) {
+        pagination.append(`<button class="btn btn-info" onclick="fetchIHAData('${data.links.previous}')">Önceki</button>`);
+    }
+    if (data.links.next) {
+        pagination.append(`<button class="btn btn-info" onclick="fetchIHAData('${data.links.next}')">Sonraki</button>`);
+    }
+}
+  </script>
+{%endblock js%}

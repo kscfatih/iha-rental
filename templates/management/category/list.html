@@ -1,0 +1,95 @@
+{%extends 'management/base/index.html'%}
+{% block title %} Kategori Listesi {%endblock title%}
+{%block breadcrumb%} Kategori Listesi {%endblock breadcrumb%}
+{%block page-title%} Kategori Listesi {%endblock page-title%}
+
+{%block content%}
+<div class="row">
+    <div class="col-sm-12">
+           <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-3">
+                      <input type="text" id="kategori_ara" class="form-control" placeholder="Kategori ara ...">
+                    </div>
+                </div>
+            </div>
+             
+             <div class="card-body">
+               <div id="total-items" ></div>
+               <table id="kategoriTable" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
+                 <thead>
+                   <tr>
+                     <th>Kategori İsmi</th>
+                     <th>Kategori Tanımı</th>
+                     <th>Düzenle</th>
+                     <th>Sil</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                 </tbody>
+               </table>
+               <div id="pagination"></div>
+             </div>
+           </div>
+         </div>
+   </div>
+{%endblock content%}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        var apiUrl = 'api/kategori/';
+    
+        $('#kategori_ara').on('input', function() {
+            fetchKategoriDataWithFilters(apiUrl);
+        });
+    
+        fetchKategoriData(apiUrl);  
+    });
+    function fetchKategoriDataWithFilters(url) {
+    var searchQuery = $('#kategori_ara').val();
+    var params = new URLSearchParams({
+        search: searchQuery
+    }).toString();
+    fetchKategoriData(url + '?' + params);
+}
+    function fetchKategoriData(url) {
+            var tableBody = $('#kategoriTable tbody');
+            tableBody.empty();  
+            tableBody.append('<tr><td colspan="8" class="text-center">Loading...</td></tr>'); 
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    tableBody.empty(); 
+                    if (data.results.length === 0) {
+               
+                        tableBody.append('<tr><td colspan="8" class="text-center">Kayıtlı kategori bulunmamaktadır. <a href="create-category">eklemek için tıklayın</a></td></tr>');
+                    } else {
+                        $.each(data.results, function(key, kategori) {
+                            tableBody.append(
+                                '<tr>' +
+                                '<td>' + kategori.isim + '</td>' +
+                                '<td>' + kategori.tanim + '</td>' +
+                                `<td><a  href="edit-category/${kategori.id}" class="btn btn-primary">Düzenle</a></td>` +
+                                `<td><a href="delete-category/${kategori.id}" class="btn btn-danger">Sil</a></td>` +
+                                '</tr>'
+                            );
+                        });
+                    }
+                    $('#pagination').empty();
+                    if (data.links.previous) {
+                        $('#pagination').append('<button onclick="fetchKategoriData(\'' + data.links.previous + '\')">Önceki</button>');
+                    }
+                    if (data.links.next) {
+                        $('#pagination').append('<button onclick="fetchKategoriData(\'' + data.links.next + '\')">Sonraki</button>');
+                    }
+                },
+                error: function() {
+                    alert("Bir hata oluştu!");
+                }
+            });
+        }
+    </script>
+{% endblock js %}

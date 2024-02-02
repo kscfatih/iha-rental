@@ -1,0 +1,25 @@
+{%extends 'management/base/index.html'%}
+{% block title %} Kategori Düzenle {%endblock title%}
+{%block breadcrumb%} Kategori Düzenle {%endblock breadcrumb%}
+{%block page-title%}İHA Kategorisi Düzenleyin {%endblock page-title%}
+
+{%block content%}
+<form method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-12">
+            <label for="kategori_adi" class="label-form"> Kategori Adı: </label>
+            <input type="text" class="form-control" name="isim" id="kategori_adi" value="{{kategori.isim}}" >
+        </div>
+        <div class="col-12 mt-3">
+            <label for="kategori_tanim" class="label-form"> Kategori Tanımı: </label>
+            <textarea name="tanim" class="form-control" id="kategori_tanim" cols="30" rows="3">{{kategori.tanim}}</textarea>
+        </div>
+        
+        <div class="col-3 mt-3">
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </div>
+    </div>
+</form>
+
+{%endblock content%}

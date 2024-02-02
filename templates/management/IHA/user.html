@@ -1,0 +1,118 @@
+{%extends 'management/base/index.html'%}
+{% block title %} Kullanıcı Listesi {%endblock title%}
+{%block breadcrumb%} Kullanıcı Listesi {%endblock breadcrumb%}
+{%block page-title%} Kullanıcı Listesi {%endblock page-title%}
+
+{%block content%}
+
+<div class="row">
+ <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-3">
+                <input type="text" id="user_ara" class="form-control" placeholder="Marka/Model ara ...">
+              </div>
+            </div>
+            
+          </div>
+        
+       
+          <div class="card-body">
+            <div id="total-items" ></div>
+            <table id="ihaTable" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
+              <thead>
+                <tr>
+                  <th>Kullanıcı İsim&Soyisim</th>
+                  <th>Kullanıcı Adı</th>
+                  <th>Mail Adresi</th>
+                  <th>Kiradaki İHA</th>
+                  <th>Sil</th>
+                </tr>
+              </thead>
+              <tbody>
+               
+                
+              </tbody>
+            </table>
+            <div id="pagination"></div>
+            
+          </div>
+        </div>
+      </div>
+</div>
+
+{%endblock content%}
+
+
+{%block js%}
+<script>
+ document.addEventListener("DOMContentLoaded", function() {
+    var apiUrl = '/management/api/user-list/';
+    $('#user_ara').on('input', function() {
+    fetchIHADataWithFilters(apiUrl);
+});
+    
+
+    fetchIHAData(apiUrl);
+});
+
+function fetchIHAData(url) {
+    var tableBody = $('#ihaTable tbody');
+    tableBody.empty(); 
+    tableBody.append('<tr><td colspan="8" class="text-center">Loading...</td></tr>'); 
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(data) {
+            tableBody.empty(); 
+
+            if (data.results.length === 0) {
+               
+                tableBody.append('<tr><td colspan="8" class="text-center">Kayıtlı kullanıcı bulunmamaktadır.</td></tr>');
+            } else {
+                $.each(data.results, function(key, user) {
+                    tableBody.append(
+                        '<tr>' +
+                        '<td>' + user.first_name+' ' +  user.last_name+'</td>' +
+                        '<td>' + user.username + '</td>' +
+                        '<td>' + user.email + '</td>' +
+                        '<td>' + user.kiralanan_iha.length + '</td>' +
+                        `<td><a href="user-sil/${user.id}" class="btn btn-danger">Sil</a></td>` +
+                        '</tr>'
+                    );
+                });
+            }
+
+            $('#total-items').text('Toplam Kullanıcı Sayısı: ' + data.total_items);
+            updatePagination(data);
+        },
+        error: function() {
+            tableBody.empty();  
+            alert("Bir hata oluştu!");
+        }
+    });
+}
+
+function fetchIHADataWithFilters(url) {
+    var searchQuery = $('#user_ara').val();
+    var params = new URLSearchParams({
+        search: searchQuery, 
+    }).toString();
+    fetchIHAData(url + '?' + params);
+}
+function updatePagination(data) {
+    console.log(data);
+    var pagination = $('#pagination');
+    pagination.empty();
+    
+    if (data.links.previous) {
+        pagination.append(`<button class="btn btn-info" onclick="fetchIHAData('${data.links.previous}')">Önceki</button>`);
+    }
+    if (data.links.next) {
+        pagination.append(`<button class="btn btn-info" onclick="fetchIHAData('${data.links.next}')">Sonraki</button>`);
+    }
+}
+  </script>
+{%endblock js%}

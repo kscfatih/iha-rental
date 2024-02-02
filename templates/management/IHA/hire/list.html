@@ -1,0 +1,188 @@
+{%extends 'management/base/index.html'%}
+{% block title %} Kiralama Talepleri {%endblock title%}
+{%block breadcrumb%} Kiralama Talepleri {%endblock breadcrumb%}
+{%block page-title%} İHA Kiralama Talepleri {%endblock page-title%}
+
+{%block content%}
+
+<div class="row">
+ <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              
+              <div class="col-3 ">
+                <select id="status" class="form-control">
+                  <option value="" selected  > Durumu Filtrele</option>
+                  <option value="PENDING"> Onay bekleyen</option>
+                  <option value="ACTIVE"> Aktif</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <select id="menzil" class="form-control">
+                  <option value="">Menzil Filtrele (KM)</option>
+                  <option value="50-100">50-100</option>
+                  <option value="100-200">100-200</option>
+                  <option value="200-300">200-300</option>
+                  <option value="300-500">300-500</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <select id="yuk_kapasitesi" class="form-control">
+                  <option value="">Yük Kapasitesi Filtrele (KG)</option>
+                  <option value="50-100">50-100</option>
+                  <option value="100-200">100-200</option>
+                  <option value="200-300">200-300</option>
+                  <option value="300-400">300-400</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <select id="kategori" class="form-control">
+                  <option value="" selected  > Kategori Filtrele</option>
+                  {%for i in kategoriler%}
+                  <option value="{{i.id}}">  {{i.isim}}</option>
+                  {%endfor%}   
+                </select>
+              </div>
+              <div class="col-3 mt-3">
+                <input type="text" id="iha_ara" class="form-control" placeholder="Marka/Model/Kullanıcı ara ...">
+              </div>
+            
+            
+            </div>
+            
+          </div>
+        
+       
+          <div class="card-body">
+            <div id="total-items" ></div>
+            <table id="ihaTable" class="display table table-striped table-hover dt-responsive nowrap" style="width: 100%">
+              <thead>
+                <tr>
+                  <th>Marka</th>
+                  <th>Model</th>
+                  <th>Kategori</th>
+                  <th>Başlangıç Tarihi</th>
+                  <th>Bitiş Tarihi</th>
+                  <th>Kullanıcı</th>
+                  <th>Durumu</th>
+                  <th>Düzenle</th>
+                  <th>Sil</th>
+                </tr>
+              </thead>
+              <tbody>
+               
+                
+              </tbody>
+            </table>
+            <div id="pagination"></div>
+            
+          </div>
+        </div>
+      </div>
+</div>
+
+{%endblock content%}
+
+
+{%block js%}
+<script>
+    
+ document.addEventListener("DOMContentLoaded", function() {
+    var apiUrl = '/management/api/hire-iha/';
+    $('#iha_ara').on('input', function() {
+    fetchIHADataWithFilters(apiUrl);
+    });
+    $('#menzil').on('change', function() {
+        fetchIHADataWithFilters(apiUrl);
+    });
+    $('#yuk_kapasitesi').on('change', function() {
+        fetchIHADataWithFilters(apiUrl);
+    });
+    $('#kategori').on('change', function() {
+        fetchIHADataWithFilters(apiUrl);
+    });
+    $('#status').on('change', function() {
+        fetchIHADataWithFilters(apiUrl);
+    });
+
+
+    fetchIHAData(apiUrl);
+});
+
+function fetchIHAData(url) {
+    var tableBody = $('#ihaTable tbody');
+    tableBody.empty(); 
+    tableBody.append('<tr><td colspan="8" class="text-center">Loading...</td></tr>'); 
+
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(data) {
+            tableBody.empty(); 
+
+            if (data.results.length === 0) {
+               
+                tableBody.append('<tr><td colspan="8" class="text-center">İHA Talebi bulunmamaktadır.</td></tr>');
+            } else {
+                $.each(data.results, function(key, hire) {
+                    var baslangicTarihi = moment(hire.baslangic_tarihi).tz('Europe/Istanbul').format('YYYY-MM-DD HH:mm:ss');
+                    var bitisTarihi = moment(hire.bitis_tarihi).tz('Europe/Istanbul').format('YYYY-MM-DD HH:mm:ss');
+
+                    tableBody.append(
+
+                        '<tr>' +
+                        '<td>' + hire.iha.marka + '</td>' +
+                        '<td>' + hire.iha.model + '</td>' +
+                        '<td>' + hire.iha.kategori_isim + '</td>' +
+                        '<td>' + baslangicTarihi  + '</td>' +
+                        '<td>' + bitisTarihi + '</td>' +
+                        '<td>' +  hire.user.first_name + ' ' + hire.user.last_name + '</td>' +
+                        '<td>' + (hire.status == 'PENDING' ? 'Onay Bekliyor' : 'Aktif') + '</td>' +
+                        `<td><a href="kiralanan-iha-onay/${hire.id}" class="btn btn-primary">Onayla</a></td>` +
+                        `<td><a href="kiralanan-iha-sil/${hire.id}" class="btn btn-danger">Sil</a></td>` +
+                        '</tr>'
+                    );
+                });
+            }
+
+            $('#total-items').text('Toplam İHA Sayısı: ' + data.total_items);
+            updatePagination(data);
+        },
+        error: function() {
+            tableBody.empty();  
+            alert("Bir hata oluştu!");
+        }
+    });
+}
+
+function fetchIHADataWithFilters(url) {
+    var searchQuery = $('#iha_ara').val();
+    var menzil = $('#menzil').val();
+    var yukKapasitesi = $('#yuk_kapasitesi').val();
+    var kategori = $('#kategori').val();
+    var status = $('#status').val();
+    var params = new URLSearchParams({
+        search: searchQuery, 
+        menzil: menzil, 
+        yuk_kapasitesi: yukKapasitesi, 
+        kategori: kategori,
+        status : status
+    }).toString();
+    fetchIHAData(url + '?' + params);
+}
+function updatePagination(data) {
+    console.log(data);
+    var pagination = $('#pagination');
+    pagination.empty();
+    
+    if (data.links.previous) {
+        pagination.append(`<button class="btn btn-info" onclick="fetchIHAData('${data.links.previous}')">Önceki</button>`);
+    }
+    if (data.links.next) {
+        pagination.append(`<button class="btn btn-info" onclick="fetchIHAData('${data.links.next}')">Sonraki</button>`);
+    }
+}
+
+  </script>
+{%endblock js%}

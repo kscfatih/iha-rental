@@ -1,0 +1,77 @@
+{%load static%}
+<nav class="pc-sidebar">
+    <div class="navbar-wrapper">
+      <div class="m-header">
+        <a href="{%url 'panel:dashboard'%}" class="b-brand text-primary">
+        <p style="font-size: large; font-weight: bold;" > İHA Kiralama Sistemi </p>
+  
+        </a>
+      </div>
+      <div class="navbar-content">
+        <div class="card pc-user-card">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="flex-shrink-0">
+                <img src="{%static 'assets/images/user/avatar-1.jpg'%}" alt="user-image" class="user-avtar wid-45 rounded-circle" />
+              </div>
+              <div class="flex-grow-1 ms-3 me-2">
+                <h6 class="mb-0">{{user.first_name}} {{user.last_name}}</h6>
+                <small>{{user.username}}</small>
+              </div>
+              <a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse" href="#pc_sidebar_userlink">
+                <svg class="pc-icon">
+                  <use xlink:href="#custom-sort-outline"></use>
+                </svg>
+              </a>
+            </div>
+            <div class="collapse pc-user-links" id="pc_sidebar_userlink">
+              <div class="pt-3">
+                <a href="{%url 'panel:account'%}">
+                  <i class="ti ti-user"></i>
+                  <span>Hesabım</span>
+                </a>
+                <a href="{%url 'panel:password_change'%}">
+                  <i class="ti ti-lock"></i>
+                  <span>Şifre değiştir</span>
+                </a>
+                <a href="{% url 'panel:logout' %}">
+                  <i class="ti ti-power"></i>
+                  <span>Çıkış yap</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <ul class="pc-navbar">
+          <li class="pc-item pc-caption">
+            <label>Menü</label>
+          </li>
+          
+          <li class="pc-item">
+            <a href="{%url 'panel:hire'%}" class="pc-link">
+              <span class="pc-micon">
+                <svg class="pc-icon">
+                  <use xlink:href="#custom-story"></use>
+                </svg>
+              </span>
+              <span class="pc-mtext">İHA Kirala</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="{%url 'panel:rented-iha'%}" class="pc-link">
+              <span class="pc-micon">
+                <svg class="pc-icon">
+                  <use xlink:href="#custom-fatrows"></use>
+                </svg>
+              </span>
+              <span class="pc-mtext">Kiralık İHA'larım</span>
+            </a>
+          </li>
+          
+          
+  
+        </ul>
+      </div>
+    </div>
+  </nav>

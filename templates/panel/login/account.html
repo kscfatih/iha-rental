@@ -1,0 +1,35 @@
+{%extends 'panel/base/index.html'%}
+
+{%block title%} Hesabım {%endblock title%}
+{%block breadcrumb%} Hesabım {%endblock breadcrumb%}
+{%block page-title%} Hesap bilgileri {%endblock page-title%}
+
+{%block content%}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row">
+        <div class="col-6">
+            <label for="first_name" class="form-label">İsim:</label>
+            <input id="first_name" name = "first_name" type="text" class="form-control" value="{{user.first_name}}" required/>
+        </div>
+        <div class="col-6">
+            <label for="last_name" class="form-label">Soy İsim:</label>
+            <input id="last_name" name = "last_name" type="text" class="form-control" value="{{user.last_name}}" required/>
+        </div>
+        <div class="col-6 mt-3">
+            <label for="username" class="form-label">Kullanıcı adı:</label>
+            <input id="username" type="text" class="form-control" value="{{user.username}}" disabled/>
+        </div>
+        <div class="col-6 mt-3">
+            <label for="email" class="form-label">E-mail:</label>
+            <input id="email" type="text" class="form-control" value="{{user.email}}" disabled/>
+        </div>
+        <div class="col-3">
+            <button type="submit" class="btn btn-primary mt-3" > Güncelle </button>
+        </div>
+    </div>
+    </form>
+    
+
+{%endblock content%}

@@ -1,0 +1,119 @@
+{%extends 'management/base/index.html'%}
+{% block title %} {%if iha%} İHA Düzenle {%else%} İHA Ekle {%endif%} {%endblock title%}
+{%block breadcrumb%}  {%if iha%} İHA Düzenle {%else%} İHA Ekle {%endif%} {%endblock breadcrumb%}
+{%block page-title%} {%if iha%} İHA Düzenle {%else%} Yeni İHA Oluştur {%endif%} {%endblock page-title%}
+
+
+
+{%block content%}
+<form method="POST" enctype="multipart/form-data">
+{%csrf_token%}
+<div class="row">
+    <div class="col-6">
+        <label for="marka" class="form-label">Marka Girin :</label>
+        <input type="text" id="marka" name="marka" {% if iha %} value="{{iha.marka}}" {% endif %} class="form-control" required/> 
+    </div>
+    <div class="col-6">
+        <label for="model" class="form-label">Model:</label>
+        <input type="text" id="model" name="model" {% if iha %} value="{{iha.model}}" {% endif %}class="form-control" required/> 
+    </div>
+    <div class="col-6 mt-3">
+        <label for="agirlik" class="form-label">Ağırlık (KG) :</label>
+        <input type="number" id="agirlik" name="agirlik" {% if iha %} value="{{iha.agirlik}}" {% endif %} class="form-control" required/> 
+    </div>
+    <div class="col-6 mt-3">
+        <label for="kategori" class="form-label">Kategori :</label>
+        <select name="kategori" class="form-control" name="kategori" id="kategori"required>
+            <option value="" disabled>seçiniz</option>
+            {% for i in kategori %}
+            <option value="{{i.id}}" {% if iha.kategori.id == i.id %} selected {% endif %}>{{i.isim}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-6 mt-3">
+        <label for="ucus_suresi" class="form-label">Uçuş Süresi (Dakika) :</label>
+        <input type="number" id="ucus_suresi" {% if iha %} value="{{iha.ucus_suresi}}" {% endif %} name="ucus_suresi" class="form-control"required /> 
+    </div>
+    <div class="col-6 mt-3">
+        <label for="menzil" class="form-label">Menzil (Metre) :</label>
+        <input type="number" id="menzil" name="menzil" {% if iha %} value="{{iha.menzil}}" {% endif %} class="form-control" required/> 
+    </div>
+    <div class="col-6 mt-3">
+        <label for="yuk_kapasitesi" class="form-label">Yük Kapasitesi (KG) :</label>
+        <input type="number" id="menzil" name="yuk_kapasitesi" {% if iha %} value="{{iha.yuk_kapasitesi}}" {% endif %} class="form-control" required /> 
+    </div>
+    <div class="col-3 mt-3">
+        <label for="oto_pilot" class="form-label">Otomatik Pilot :</label>
+        <select name="oto_pilot" class="form-control" name="oto_pilot" id="oto_pilot" required>
+            <option value="true" {% if iha.oto_pilot == "true" %} selected {% endif %}>Evet</option>
+            <option value="false" {% if iha.oto_pilot == "false" %} selected {% endif %} >Hayır</option>
+        </select>
+    </div>
+    <div class="col-3 mt-3">
+        <label for="navigasyon" class="form-label">Navigasyon :</label>
+        <select name="navigasyon" class="form-control"  name="navigasyon" id="navigasyon" required>
+            <option value="true" {% if iha.navigasyon == "true" %} selected {% endif %} >Evet</option>
+            <option value="false" {% if iha.navigasyon == "false" %} selected {% endif %} >Hayır</option>
+        </select>
+    </div>
+    <div class="col-6 mt-3">
+        <label for="max_hiz" class="form-label">Maksimum Hız (m/sn) :</label>
+        <input type="number" id="max_hiz" name="max_hiz" {% if iha %} value="{{iha.maksimum_hiz}}" {% endif %} class="form-control" required/>
+    </div>
+    <div class="col-6 mt-3">
+        <label for="status" class="form-label">Durumu :</label>
+        <select name="status" class="form-control" name="status" id="status" required>
+            <option value="true" {% if iha.status == "true" %} selected {% endif %} >Aktif</option>
+            <option value="false" {% if iha.status == "false" %} selected {% endif %} >Pasif</option>
+        </select>
+    </div>
+    <div class="col-12">
+        {% if iha.resim %}
+        <div class="col-3 mt-3 resim-card" >
+            <div class="card mb-3">
+                <img src="{{ iha.resim.url }}"  alt="{{ iha.marka }} {{ iha.model }}" class="img-fluid">
+                <div class="card-body">
+                 <button type="button" id="resmi_sil" class="btn btn-info">Resmi Sil</button>
+                </div>
+              </div>
+        </div><br>
+        
+           
+        {% else %}
+            <div class="form-file mt-3 resim-input">
+                <label for="resim_input" class="form-label">İHA için resim yükleyin</label>
+                <input type="file" name="resim" id="resim_input" class="form-control" aria-label="file example" required data-gtm-form-interact-field-id="0">
+                <div class="invalid-feedback">Resim yüklendi</div>
+            </div><br>
+        {% endif %}
+    </div>
+    
+  
+    <div class="col-3 mt-3">
+        <button type="Submit" class="btn btn-primary">
+            {%if iha%} İHA Düzenle {%else%} İHA Ekle {%endif%}</button>
+    </div>
+    
+    
+    
+</div>
+    
+</form>
+{%endblock content%}
+
+{%block js%}
+<script>
+    $(document).ready(function() {
+        $('#resmi_sil').click(function() {
+        var yeniInputHtml = `
+            <div class="form-file mt-3 resim-input">
+                <label for="resim_input" class="form-label">İHA için resim yükleyin</label>
+                <input type="file" name="resim" id="resim_input" class="form-control" aria-label="file example" required data-gtm-form-interact-field-id="0">
+                <div class="invalid-feedback">Resim yüklendi</div>
+            </div><br>`;
+        $(this).closest('.card').parent().replaceWith(yeniInputHtml);
+    });
+});
+</script>
+
+{%endblock js%}

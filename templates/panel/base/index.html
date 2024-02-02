@@ -1,0 +1,48 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title> {% block title %} {%endblock title%} </title>
+    {%include 'panel/base/inc/head.html'%}
+    {%block css%} {%endblock css%}
+  </head>
+  <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme_contrast="" data-pc-theme="light">
+    {%include 'panel/base/inc/head.html'%}
+    {%include 'panel/base/inc/navbar.html'%}
+    {%include 'panel/base/inc/header.html'%}
+    <section class="pc-container">
+      <div class="pc-content">
+        <div class="page-header">
+          <div class="page-block">
+            <div class="row align-items-center">
+              <div class="col-md-12">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item" aria-current="page"> {%block breadcrumb%} {%endblock breadcrumb%} </li>
+                </ul>
+              </div>
+              <div class="col-md-12">
+                <div class="page-header-title">
+                  <h2 class="mb-0"> {%block page-title%}  {%endblock page-title%}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+      {% endif %}
+      {%block content%} {%endblock content%}
+      </div>
+    </section>
+
+      {%include 'panel/base/inc/footer.html'%}
+      {%block js%} {%endblock js%}
+  </body>
+</html>
+

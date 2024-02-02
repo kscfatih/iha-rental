@@ -1,0 +1,230 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <title> {% block title %} {%endblock title%} </title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {%block js%}{%endblock js%}
+    <link rel="icon" href="{%static 'assets/images/favicon.svg'%}" type="image/x-icon"> 
+    <link rel="stylesheet" href="{%static 'assets/css/plugins/dataTables.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{%static 'assets/css/plugins/responsive.bootstrap5.min.css'%}">
+<link rel="stylesheet" href="{%static 'assets/fonts/inter/inter.css'%}" id="main-font-link" />
+<link rel="stylesheet" href="{%static 'assets/fonts/tabler-icons.min.css'%}" >
+<link rel="stylesheet" href="{%static 'assets/fonts/feather.css'%}" >
+<link rel="stylesheet" href="{%static 'assets/fonts/fontawesome.css'%}" >
+<link rel="stylesheet" href="{%static 'assets/fonts/material.css'%}" >
+<link rel="stylesheet" href="{%static 'assets/css/style.css'%}" id="main-style-link" >
+<link rel="stylesheet" href="{%static 'assets/css/style-preset.css'%}" >
+
+  </head>
+
+  <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme_contrast="" data-pc-theme="light">
+
+<div class="loader-bg">
+  <div class="loader-track">
+    <div class="loader-fill"></div>
+  </div>
+</div>
+
+<nav class="pc-sidebar">
+  <div class="navbar-wrapper">
+    <div class="m-header">
+      <a href="{%url 'management:dashboard'%}" class="b-brand text-primary">
+      <p style="font-size: large; font-weight: bold;" > İHA Kiralama Sistemi Yönetim Paneli </p>
+
+      </a>
+    </div>
+    <div class="navbar-content">
+      <div class="card pc-user-card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0">
+              <img src="{%static 'assets/images/user/avatar-1.jpg'%}" alt="user-image" class="user-avtar wid-45 rounded-circle" />
+            </div>
+            <div class="flex-grow-1 ms-3 me-2">
+              <h6 class="mb-0">{{user.first_name}} {{user.last_name}}</h6>
+              <small>{{user.username}}</small>
+            </div>
+            <a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse" href="#pc_sidebar_userlink">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-sort-outline"></use>
+              </svg>
+            </a>
+          </div>
+          <div class="collapse pc-user-links" id="pc_sidebar_userlink">
+            <div class="pt-3">
+              <a href="{%url 'management:account'%}">
+                <i class="ti ti-user"></i>
+                <span>Hesabım</span>
+              </a>
+              <a href="{% url 'management:password_change' %}">
+                <i class="ti ti-lock"></i>
+                <span>Şifre değiştir</span>
+              </a>
+              <a href="{% url 'panel:logout' %}">
+                <i class="ti ti-power"></i>
+                <span>Çıkış yap</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="pc-navbar">
+        <li class="pc-item pc-caption">
+          <label>Menü</label>
+        </li>
+       
+
+        <li class="pc-item">
+          <a href="{%url 'management:dashboard'%}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-presentation-chart"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Ana Sayfa</span></a>
+        </li>
+        
+        <li class="pc-item">
+          <a href="{%url 'management:create-iha'%}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-story"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">İHA Ekle</span>
+          </a>
+        </li>
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-document"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Kategori</span>
+            <span class="pc-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+          </a>
+          <ul class="pc-submenu" style="display: none;">
+            <li class="pc-item"><a class="pc-link" href="{%url 'management:create-category'%}">Kategori Ekle</a></li>
+            <li class="pc-item"><a class="pc-link" href="{%url 'management:category-list'%}">Kategori Listesi</a></li>
+          </ul>
+        </li>
+        <li class="pc-item">
+            <a href="{%url 'management:list-iha'%}" class="pc-link">
+              <span class="pc-micon">
+                <svg class="pc-icon">
+                  <use xlink:href="#custom-story"></use>
+                </svg>
+              </span>
+              <span class="pc-mtext">İHA'lar</span>
+            </a>
+          </li>
+        <li class="pc-item">
+            <a href="{%url 'management:hire-list'%}" class="pc-link">
+              <span class="pc-micon">
+                <svg class="pc-icon">
+                  <use xlink:href="#custom-story"></use>
+                </svg>
+              </span>
+              <span class="pc-mtext">Kiralama Talepleri </span>
+            </a>
+          </li>
+          
+        <li class="pc-item">
+          <a href="{%url 'management:user-list'%}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-fatrows"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Müşteriler</span>
+          </a>
+        </li>
+        
+        
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+{%include 'panel/base/inc/header.html'%}
+
+
+    <section class="pc-container">
+      <div class="pc-content">
+        <div class="page-header">
+          <div class="page-block">
+            <div class="row align-items-center">
+              <div class="col-md-12">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{%url 'management:dashboard'%}">Ana sayfa</a></li>
+                  <li class="breadcrumb-item" aria-current="page"> {%block breadcrumb%} {%endblock breadcrumb%} </li>
+                </ul>
+              </div>
+              <div class="col-md-12">
+                <div class="page-header-title">
+                  <h2 class="mb-0"> {%block page-title%}  {%endblock page-title%}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+        {%block content%} {%endblock content%}
+      </div>
+    </section>
+
+    <footer class="pc-footer">
+      <div class="footer-wrapper container-fluid">
+        <div class="row">
+          <div class="col my-1">
+            <p class="m-0"
+              >BAYKAR İHA KİRALAMA SİSTEMİ - created by Fatih Kuşçu </p
+            >
+          </div>
+          
+        </div>
+      </div>
+    </footer> 
+    
+ 
+<script src="{%static 'assets/js/plugins/popper.min.js'%}"></script>
+<script src="{%static 'assets/js/plugins/simplebar.min.js'%}"></script>
+<script src="{%static 'assets/js/plugins/bootstrap.min.js'%}"></script>
+<script src="{%static 'assets/js/fonts/custom-font.js'%}"></script>
+<script src="{%static 'assets/js/pcoded.js'%}"></script>
+<script src="{%static 'assets/js/plugins/feather.min.js'%}"></script>
+
+
+
+
+
+
+
+</body>
+<!-- [Body] end -->
+
+<!-- Mirrored from ableproadmin.com/table/dt_ext_responsive.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 31 Jan 2024 12:25:38 GMT -->
+</html>
+
+

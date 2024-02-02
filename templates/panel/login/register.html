@@ -1,0 +1,88 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Yeni Kayıt</title>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="author" content="Phoenixcoded">
+
+
+<link rel="icon" href="{%static 'assets/images/favicon.svg'%}" type="image/x-icon"> 
+<link rel="stylesheet" href="{%static 'assets/fonts/inter/inter.css'%}" id="main-font-link" />
+<link rel="stylesheet" href="{%static 'assets/fonts/tabler-icons.min.css'%}" >
+<link rel="stylesheet" href="{%static 'assets/fonts/feather.css'%}" >
+<link rel="stylesheet" href="{%static 'assets/fonts/fontawesome.css'%}" >
+<link rel="stylesheet" href="{%static 'assets/fonts/material.css'%}" >
+<link rel="stylesheet" href="{%static 'assets/css/style.css'%}" id="main-style-link" >
+<link rel="stylesheet" href="{%static 'assets/css/style-preset.css'%}" >
+</head>
+<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme_contrast="" data-pc-theme="light">
+
+  <div class="loader-bg">
+    <div class="loader-track">
+      <div class="loader-fill"></div>
+    </div>
+  </div>
+
+
+  <div class="auth-main">
+    <div class="auth-wrapper v2">
+      
+      <div class="auth-form">
+        <div class="card my-5">
+          <div class="card-body">
+           
+            <h4 class="text-center f-w-500 mb-3">Kayıt olmak için bilgileri doldurun</h4>
+      
+                <form method="POST">
+                    {%csrf_token%}
+                    <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group mb-3">
+                          <input type="text" name = "firstname" class="form-control" placeholder="First Name"required>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group mb-3">
+                          <input type="text" name = "lastname" class="form-control" placeholder="Last Name"required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group mb-3">
+                      <input type="email" name = "email" class="form-control" placeholder="Email Address"required>
+                    </div>
+                    <div class="form-group mb-3">
+                      <input type="password" name="pw1" class="form-control" placeholder="Password"required>
+                    </div>
+                    <div class="form-group mb-3">
+                      <input type="password" name="pw2" class="form-control" placeholder="Confirm Password"required>
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                      <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+                    </div>
+
+                </form>
+             
+            <div class="d-flex justify-content-between align-items-end mt-4">
+              <h6 class="f-w-500 mb-0">Hesabınız zaten var mı ?</h6>
+              <a href="{%url 'panel:login'%}" class="link-primary">Giriş Yap</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{%static 'assets/js/plugins/popper.min.js'%}"></script>
+  <script src="{%static 'assets/js/plugins/simplebar.min.js'%}"></script>
+  <script src="{%static 'assets/js/plugins/bootstrap.min.js'%}"></script>
+  <script src="{%static 'assets/js/fonts/custom-font.js'%}"></script>
+  <script src="{%static 'assets/js/pcoded.js'%}"></script>
+  <script src="{%static 'assets/js/plugins/feather.min.js'%}"></script>
+
+  

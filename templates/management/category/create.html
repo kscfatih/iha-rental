@@ -1,0 +1,25 @@
+{%extends 'management/base/index.html'%}
+{% block title %} Kategori Ekle {%endblock title%}
+{%block breadcrumb%} Kategori Ekle {%endblock breadcrumb%}
+{%block page-title%}İHA Kategorisi Ekleyin {%endblock page-title%}
+
+{%block content%}
+<form method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-12">
+            <label for="kategori_adi" class="label-form"> Kategori Adı: </label>
+            <input type="text" class="form-control" name="isim" id="kategori_adi" >
+        </div>
+        <div class="col-12 mt-3">
+            <label for="kategori_tanim" class="label-form"> Kategori Tanımı: </label>
+            <textarea name="tanim" class="form-control" id="kategori_tanim" cols="30" rows="3"></textarea>
+        </div>
+        
+        <div class="col-3 mt-3">
+            <button type="submit" class="btn btn-primary">Ekle</button>
+        </div>
+    </div>
+</form>
+
+{%endblock content%}

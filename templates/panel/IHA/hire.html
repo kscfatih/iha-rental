@@ -1,0 +1,279 @@
+{%extends 'panel/base/index.html'%}
+
+{%block title%} İHA Kirala {%endblock title%}
+{%block breadcrumb%} İHA Kirala {%endblock breadcrumb%}
+{%block page-title%} Kiralık İHA'lar {%endblock page-title%}
+{%block content%}
+<div class="row col-12">
+  <div class="card">
+    <div class="card-body">
+  <div class="row">
+    <div class="col-3">
+      <input type="text" id="iha_ara" class="form-control" placeholder="Marka/Model ara ...">
+    </div>
+    <div class="col-3">
+      <select id="menzil" class="form-control">
+        <option value="">Menzil Filtrele (KM)</option>
+        <option value="50-100">50-100</option>
+        <option value="100-200">100-200</option>
+        <option value="200-300">200-300</option>
+        <option value="300-500">300-500</option>
+      </select>
+    </div>
+    <div class="col-3">
+      <select id="yuk_kapasitesi" class="form-control">
+        <option value="">Yük Kapasitesi Filtrele (KG)</option>
+        <option value="50-100">50-100</option>
+        <option value="100-200">100-200</option>
+        <option value="200-300">200-300</option>
+        <option value="300-400">300-400</option>
+      </select>
+    </div>
+    <div class="col-3">
+      <select id="kategori" class="form-control">
+        <option value="" selected  > Kategori Filtrele</option>
+        {%for i in kategoriler%}
+        <option value="{{i.id}}">  {{i.isim}}</option>
+        {%endfor%}   
+      </select>
+    </div>
+  </div>
+    
+  </div>  </div> 
+</div>
+
+  <div id="ihaCardsContainer" class="row" ></div>
+  <div id="pagination" class="mt-3"></div>
+<input type="hidden" id="now-input" value="{{now}}" >
+  {%endblock content%}
+
+  
+
+{%block js%}
+<script src="../../cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="../assets/js/plugins/clipboard.min.js"></script>
+<script src="../assets/js/component.js"></script>
+
+<script>
+ document.addEventListener("DOMContentLoaded", function() {
+    var apiUrl = '/management/api/iha/';
+    $('#iha_ara, #menzil, #yuk_kapasitesi, #kategori').on('input change', function() {
+        fetchIHADataWithFilters(apiUrl);
+    });
+    
+
+    fetchIHAData(apiUrl);
+   
+});
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+function fetchIHAData(url) {
+  var csrftoken = getCookie('csrftoken');
+    $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(data) {
+            var ihaCardsContainer = $('#ihaCardsContainer');
+            ihaCardsContainer.empty();
+            console.log(data.results)
+            if (data.results.length === 0) {
+                ihaCardsContainer.append('<div class="col-12 text-center">İHA bulunmamaktadır.</div>');
+            } else {
+                $.each(data.results, function(key, iha) {
+                  if (iha.status != 'false'){
+
+                  
+                  
+                    var cardHtml = `
+                            <div class="col-md-4 mb-3">
+                              <div class="card">
+                              
+                                  <img class="img-fluid card-img-top " style="height: 200px; width: 100%; object-fit: cover; " src="${iha.resim}" alt="Card image cap">
+                            
+                                <div class="card-body">
+                                    <h5 class="card-title">${iha.model}</h5>
+                                    <p>${iha.marka}</p>
+                                </div>
+                                <div class="card-footer">
+                                  <button class="btn btn-light-primary " type="button" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasRight-${key}" aria-controls="offcanvasRight">İncele / Kiralama talebi oluştur</button>
+                                </div>
+                              </div>
+                            </div>
+                        
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight-${key}"
+                            aria-labelledby="offcanvasRightLabel">
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                    aria-label="Close"></button>
+                                    <img class="img-fluid card-img-top" src="${iha.resim}" alt="Card image cap">
+                            <div class="offcanvas-header">
+                             
+                                  
+                                
+                            </div>
+                            <div class="offcanvas-body">
+                              
+                              
+                              <h5 id="iha_name" class="mb-2"><b>Model : </b>  ${iha.model}</small></h5>
+                              <p class="text-muted mb-3" id="iha_marka"><b> Marka :</b> ${iha.marka}</p>
+                              <hr>
+                              <form action="/management/iha-kiralama" method="POST"> 
+                                <input type="hidden" name="csrfmiddlewaretoken" value="` + csrftoken + `">
+                                <input type="hidden" name="iha_id" value="${iha.id}" />
+                                <div class="form-group ">
+                                  <h3 class="mt-3" > Kiralama Detay </h3>
+                                </div>
+                                <div class="form-group ">
+                                  <label for="demo-datetime-local" class="form-label">Başlangıç tarihi :</label>
+                                  <input class="form-control" name="start_date" type="datetime-local" value="" min="${($('#now-input').val())}" id="demo-datetime-local" required>
+                                </div>
+                                <div class="form-group ">
+                                  <label for="demo-datetime-local" class="form-label">Bitiş tarihi :</label>
+                                  <input class="form-control" name="end_date" type="datetime-local" value="" min="${($('#now-input').val())}" id="demo-datetime-local" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary"> Kiralama talebi gönder </button> 
+                              </form>
+
+                              <hr>
+
+                              <h3 class="mt-3" > İHA Özellikleri </h3>
+                              <div class="table-body mt-3">
+                                <div class="table-responsive">
+                                  <table class="table table-hover">
+                                    <thead>
+                                      <tr>
+                                        <th>Özellik</th>
+                                        <th >Detay</th>
+
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex align-items-center text-muted">
+                                            <span class="text-truncate w-100">Ağırlık</span>
+                                          </div>
+                                        </td>
+                                        <td >${iha.agirlik} KG</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex align-items-center text-muted">
+                                            <span class="text-truncate w-100">Uçuş Süresi</span>
+                                          </div>
+                                        </td>
+                                        <td >${iha.ucus_suresi} Dakika</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex align-items-center text-muted">
+                                            <span class="text-truncate w-100">Menzil</span>
+                                          </div>
+                                        </td>
+                                        <td >${iha.menzil} metre</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex align-items-center text-muted">
+                                            <span class="text-truncate w-100">Kategori</span>
+                                          </div>
+                                        </td>
+                                        <td >${iha.kategori_isim} </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex align-items-center text-muted">
+                                            <span class="text-truncate w-100">Yük Kapasitesi</span>
+                                          </div>
+                                        </td>
+                                        <td >${iha.yuk_kapasitesi} KG</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex align-items-center text-muted">
+                                            <span class="text-truncate w-100">Navigasyon</span>
+                                          </div>
+                                        </td>
+                                        <td >${(iha.navigasyon == 'true' ? 'Aktif':'Pasif' )}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex align-items-center text-muted">
+                                            <span class="text-truncate w-100">Oto Pilot</span>
+                                          </div>
+                                        </td>
+                                        <td >${(iha.oto_pilot  == 'true' ? 'Aktif':'Pasif' )}</td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                          <div class="d-flex align-items-center text-muted">
+                                            <span class="text-truncate w-100">Maksimum Hız</span>
+                                          </div>
+                                        </td>
+                                        <td >${iha.maksimum_hiz} m/sn</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                           
+                            </div>
+                        </div>
+                    `;
+                    ihaCardsContainer.append(cardHtml);
+                  }
+                });
+            }
+
+            updatePagination(data);
+        },
+        error: function() {
+            ihaCardsContainer.empty();
+            ihaCardsContainer.append('<div class="col-12 text-center">Bir hata oluştu!</div>');
+        }
+    });
+}
+
+
+function fetchIHADataWithFilters(url) {
+    var searchQuery = $('#iha_ara').val();
+    var menzil = $('#menzil').val();
+    var yukKapasitesi = $('#yuk_kapasitesi').val();
+    var kategori = $('#kategori').val();
+    var params = new URLSearchParams({
+        search: searchQuery,
+        menzil: menzil,
+        yuk_kapasitesi: yukKapasitesi,
+        kategori: kategori
+    }).toString();
+    fetchIHAData(url + '?' + params);
+}
+
+function updatePagination(data) {
+    console.log(data);
+    var pagination = $('#pagination');
+    pagination.empty();
+    
+    if (data.links.previous) {
+        pagination.append(`<button class="btn btn-info" onclick="fetchIHAData('${data.links.previous}')">Önceki</button>`);
+    }
+    if (data.links.next) {
+        pagination.append(`<button class="btn btn-info" onclick="fetchIHAData('${data.links.next}')">Sonraki</button>`);
+    }
+}
+
+
+  </script>
+{%endblock js%}

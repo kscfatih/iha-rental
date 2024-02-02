@@ -1,0 +1,83 @@
+{%extends 'management/base/index.html'%}
+{% block title %} Ana sayfa {%endblock title%}
+{%block page-title%} Hoşgeldin, {{user.first_name}} {{user.last_name}} {%endblock page-title%}
+
+
+
+{%block content%}
+<div class="row">
+    <div class="col-md-6 col-xxl-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="flex-shrink-0">
+                <div class="avtar avtar-s bg-light-primary">
+                    <div class="i-block" data-clipboard-text="ph-duotone ph-airplane-in-flight" data-bs-toggle="tooltip" data-filter="ph-airplane-in-flight" aria-label="ph-duotone ph-airplane-in-flight" data-bs-original-title="ph-duotone ph-airplane-in-flight" aria-describedby="tooltip392595"><i class="ph-duotone ph-airplane-in-flight"></i></div>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h6 class="mb-0">Kiralama Talepleri</h6>
+              </div>
+            </div>
+            <div class="bg-body p-3  rounded">
+              <div class=" row align-items-center">
+                <div class="col-12">
+                  <h5 > {{kiralanan_iha}} Adet</h5>
+                  <p class="text-primary mb-0"><a href="{%url 'management:hire-list'%}"><i class="ti ti-arrow-up-right"></i> Detay</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xxl-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="flex-shrink-0">
+                <div class="avtar avtar-s bg-light-primary">
+                    <div class="i-block" data-clipboard-text="ph-duotone ph-address-book" data-bs-toggle="tooltip" data-filter="ph-address-book" aria-label="ph-duotone ph-address-book" data-bs-original-title="ph-duotone ph-address-book"><i class="ph-duotone ph-address-book"></i></div>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h6 class="mb-0">Kullanıcılar</h6>
+              </div>
+            </div>
+            <div class="bg-body p-3  rounded">
+              <div class="row align-items-center">
+                <div class="col-12">
+                  <h5 >{{user_}} Adet</h5>
+                  <p class="text-primary mb-0"><a href="{%url 'management:user-list'%}"><i class="ti ti-arrow-up-right"></i> Detay</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-xxl-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="flex-shrink-0">
+                <div class="avtar avtar-s bg-light-primary">
+                    <div class="i-block" data-clipboard-text="ph-duotone ph-airplane" data-bs-toggle="tooltip" data-filter="ph-airplane" aria-label="ph-duotone ph-airplane" data-bs-original-title="ph-duotone ph-airplane"><i class="ph-duotone ph-airplane"></i></div>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <h6 class="mb-0">İHA</h6>
+              </div>
+            </div>
+            <div class="bg-body p-3 rounded">
+              <div class=" row align-items-center">
+                <div class="col-12">
+                  <h5 >{{iha}} Adet</h5>
+                  <p class="text-primary mb-0"><a href="{%url 'management:list-iha'%}"><i class="ti ti-arrow-up-right"></i> Detay</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+{%endblock content%}
