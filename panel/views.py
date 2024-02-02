@@ -89,3 +89,6 @@ def password_change(request):
             pass
     return render(request, "panel/login/repassword.html")
 
+
+def home(request):
+    return render(request,"panel/home.html")
