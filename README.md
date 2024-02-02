@@ -11,7 +11,7 @@ email : test@example.com
 şifre : IHA123.
 
 ## Postgresql giriş bilgileri:
-Link : https:kambur.net/phppgadmin
+Link : https://kambur.net/phppgadmin  
 Username : iha_db  
 Şifre : IHA123.  
 Veritabanı Adı: ihadb
